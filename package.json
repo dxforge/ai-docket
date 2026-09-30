@@ -1,0 +1,23 @@
+{
+  "name": "ai-docket",
+  "version": "0.1.1",
+  "description": "AI 에이전트를 위한 문서 저장소 MCP 서버",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "ulid": "^3.0.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "^7.0.2"
+  }
+}
