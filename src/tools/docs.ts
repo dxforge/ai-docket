@@ -207,6 +207,16 @@ export async function list(params: ListParams): Promise<ListResult> {
     whereValues.push(key, value as InValue);
   }
 
+  if (params.query) {
+    // SQLite는 LIKE 패턴이 50000바이트를 넘으면 에러를 내므로, 그보다 훨씬 작게 잘라 에러 원인을 분명히 한다
+    if (params.query.length > 1000) {
+      throw new Error('query must be at most 1000 characters');
+    }
+    const pattern = `%${params.query.replace(/[\\%_]/g, '\\$&')}%`;
+    whereClause += " AND (title LIKE ? ESCAPE '\\' OR content LIKE ? ESCAPE '\\')";
+    whereValues.push(pattern, pattern);
+  }
+
   const countResult = await db.execute({
     sql: `SELECT COUNT(*) as count FROM docs WHERE ${whereClause}`,
     args: whereValues,
