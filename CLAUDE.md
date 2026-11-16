@@ -15,7 +15,7 @@ bun run src/index.ts
 |------|------|
 | `save` | 문서 저장 (id 있으면 PATCH 수정, 없으면 생성) |
 | `get` | 단일 조회 (id 또는 project+name, include_links 옵션) |
-| `list` | 목록 조회 (project/name/tags/meta 필터) |
+| `list` | 목록 조회 (project/name/tags/meta 필터, query 제목·본문 검색) |
 | `delete` | 문서 삭제 |
 | `link` | 연결 관리 (action: add/remove) |
 

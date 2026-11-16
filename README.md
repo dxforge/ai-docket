@@ -146,6 +146,7 @@ get({ id: "01KG...", include_links: true })
 | `name` | 이름이 정확히 같은 문서. `project`를 생략하면 모든 프로젝트에서 찾기 |
 | `tags` | 지정한 태그를 모두 가진 문서 (AND) |
 | `meta` | 키-값이 일치하는 문서 |
+| `query` | 제목이나 본문에 이 글자가 들어 있는 문서 (부분 일치, 영문 대소문자 무시) |
 | `limit`, `offset` | 개수(기본 50)와 시작 위치. 결과의 `total`은 전체 개수 |
 
 ```typescript
@@ -153,6 +154,7 @@ list({ project: "my-project" })
 list({ project: "my-project", tags: ["idea", "feature"] })
 list({ name: "spec" })
 list({ meta: { status: "active" } })
+list({ project: "my-project", query: "embedded replica" })
 ```
 
 ### delete

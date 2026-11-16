@@ -207,6 +207,12 @@ export async function list(params: ListParams): Promise<ListResult> {
     whereValues.push(key, value as InValue);
   }
 
+  if (params.query) {
+    const pattern = `%${params.query.replace(/[\\%_]/g, '\\$&')}%`;
+    whereClause += " AND (title LIKE ? ESCAPE '\\' OR content LIKE ? ESCAPE '\\')";
+    whereValues.push(pattern, pattern);
+  }
+
   const countResult = await db.execute({
     sql: `SELECT COUNT(*) as count FROM docs WHERE ${whereClause}`,
     args: whereValues,

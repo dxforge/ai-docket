@@ -65,6 +65,7 @@ export interface ListParams {
   name?: string;
   tags?: string[];
   meta?: Record<string, unknown>;
+  query?: string;
   limit?: number;
   offset?: number;
 }

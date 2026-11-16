@@ -86,3 +86,52 @@ describe('list() 필터링', () => {
     expect(page1.total).toBe(5);
   });
 });
+
+describe('list() query 검색', () => {
+  test('본문에 검색어가 있는 문서를 찾는다', async () => {
+    await save({ title: 'Body Hit', content: '여기에 고래 이야기가 있다', project: 'q-body' });
+    await save({ title: 'Body Miss', content: '아무 관련 없는 내용', project: 'q-body' });
+
+    const result = await list({ project: 'q-body', query: '고래' });
+    expect(result.docs.map(d => d.title)).toEqual(['Body Hit']);
+    expect(result.total).toBe(1);
+  });
+
+  test('제목에 검색어가 있는 문서를 찾는다', async () => {
+    await save({ title: '펭귄 관찰기', content: 'content', project: 'q-title' });
+    await save({ title: '다른 제목', content: 'content', project: 'q-title' });
+
+    const result = await list({ project: 'q-title', query: '펭귄' });
+    expect(result.docs.map(d => d.title)).toEqual(['펭귄 관찰기']);
+  });
+
+  test('다른 필터와 AND로 묶인다', async () => {
+    await save({ title: 'In Project', content: '수달', project: 'q-and-1' });
+    await save({ title: 'No Match', content: '해달', project: 'q-and-1' });
+    await save({ title: 'Other Project', content: '수달', project: 'q-and-2' });
+
+    const result = await list({ project: 'q-and-1', query: '수달' });
+    expect(result.docs.map(d => d.title)).toEqual(['In Project']);
+  });
+
+  test('% 와 _ 는 와일드카드가 아니라 글자로 찾는다', async () => {
+    await save({ title: 'Percent', content: '달성률 100% 확인', project: 'q-escape' });
+    await save({ title: 'Digits', content: '100점 만점', project: 'q-escape' });
+    await save({ title: 'Underscore', content: 'snake_case 이름', project: 'q-escape' });
+    await save({ title: 'Dash', content: 'snake-case 이름', project: 'q-escape' });
+
+    const percent = await list({ project: 'q-escape', query: '100%' });
+    expect(percent.docs.map(d => d.title)).toEqual(['Percent']);
+
+    const underscore = await list({ project: 'q-escape', query: 'snake_case' });
+    expect(underscore.docs.map(d => d.title)).toEqual(['Underscore']);
+  });
+
+  test('백슬래시가 들어간 검색어도 글자로 찾는다', async () => {
+    await save({ title: 'Backslash', content: 'C:\\temp 경로', project: 'q-backslash' });
+    await save({ title: 'No Backslash', content: 'C:/temp 경로', project: 'q-backslash' });
+
+    const result = await list({ project: 'q-backslash', query: 'C:\\temp' });
+    expect(result.docs.map(d => d.title)).toEqual(['Backslash']);
+  });
+});
