@@ -134,4 +134,17 @@ describe('list() query 검색', () => {
     const result = await list({ project: 'q-backslash', query: 'C:\\temp' });
     expect(result.docs.map(d => d.title)).toEqual(['Backslash']);
   });
+
+  test('영문은 대소문자를 구분하지 않는다', async () => {
+    await save({ title: 'Upper', content: 'Embedded Replica 설명', project: 'q-case' });
+    await save({ title: 'Other', content: 'remote only', project: 'q-case' });
+
+    const result = await list({ project: 'q-case', query: 'embedded replica' });
+    expect(result.docs.map(d => d.title)).toEqual(['Upper']);
+  });
+
+  test('1000자를 넘는 검색어는 거절한다', async () => {
+    await expect(list({ query: 'a'.repeat(1001) })).rejects.toThrow('query must be at most 1000 characters');
+    await expect(list({ query: 'a'.repeat(1000) })).resolves.toBeDefined();
+  });
 });

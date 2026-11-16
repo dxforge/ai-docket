@@ -59,7 +59,7 @@ export function createServer(): McpServer {
         name: z.string().optional().describe('name 정확 매칭 (프로젝트 무관)'),
         tags: z.array(z.string()).optional().describe('태그 필터 (AND)'),
         meta: z.record(z.string(), z.unknown()).optional().describe('메타데이터 필터'),
-        query: z.string().optional().describe('제목·본문 부분 일치 검색'),
+        query: z.string().optional().describe('제목·본문 부분 일치 검색 (글자 그대로 비교, %·_·* 는 와일드카드 아님, 영문 대소문자 무시, 최대 1000자)'),
         limit: z.number().optional().describe('조회 개수 (기본 50)'),
         offset: z.number().optional().describe('시작 위치'),
       },
